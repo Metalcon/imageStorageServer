@@ -3,9 +3,6 @@ package de.metalcon.imageStorageServer.protocol.create;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-
 import de.metalcon.imageStorageServer.protocol.ProtocolConstants;
 import de.metalcon.utils.FormFile;
 import de.metalcon.utils.FormItemList;
@@ -19,21 +16,19 @@ public class CreateRequest {
 
 	// TODO: JavaDoc
 
-	private static final JSONParser PARSER = new JSONParser();
+	protected final String imageIdentifier;
 
-	private final String imageIdentifier;
+	protected final InputStream imageStream;
 
-	private final InputStream imageStream;
+	protected final String metaData;
 
-	private final String metaData;
-
-	private final boolean autoRotateFlag;
+	protected final boolean autoRotateFlag;
 
 	public CreateRequest(final String imageIdentifier,
-			final InputStream imageStream2, final String metaData,
+			final InputStream imageStream, final String metaData,
 			final boolean autoRotateFlag) {
 		this.imageIdentifier = imageIdentifier;
-		this.imageStream = imageStream2;
+		this.imageStream = imageStream;
 		this.metaData = metaData;
 		this.autoRotateFlag = autoRotateFlag;
 	}
@@ -54,13 +49,6 @@ public class CreateRequest {
 		return this.autoRotateFlag;
 	}
 
-	/**
-	 * Checks if the FormItemList contains all required objects.
-	 * 
-	 * @param formItemList
-	 * @param response
-	 * @return CreateRequest, if all needed objects are found, else null
-	 */
 	public static CreateRequest checkRequest(final FormItemList formItemList,
 			final CreateResponse response) {
 
@@ -85,14 +73,6 @@ public class CreateRequest {
 		return null;
 	}
 
-	/**
-	 * Extracts the image identifier field from the FormItemList and checks for
-	 * protocol compliance
-	 * 
-	 * @param formItemList
-	 * @param response
-	 * @return String imageIdentifier if valid, else null
-	 */
 	protected static String checkImageIdentifier(
 			final FormItemList formItemList, final CreateResponse response) {
 		try {
@@ -105,14 +85,6 @@ public class CreateRequest {
 		return null;
 	}
 
-	/**
-	 * Extracts the ImageStream field from the FormItemList and checks for
-	 * protocol compliance
-	 * 
-	 * @param formItemList
-	 * @param response
-	 * @return FormFile imageStream if valid, else null
-	 */
 	protected static InputStream checkImageStream(
 			final FormItemList formItemList, final CreateResponse response) {
 		try {
@@ -131,14 +103,16 @@ public class CreateRequest {
 		return null;
 	}
 
-	/**
-	 * Extracts the autorotate flag field from the FormItemList and checks for
-	 * protocol compliance
-	 * 
-	 * @param formItemList
-	 * @param response
-	 * @return Boolean autoRotate if valid, else null
-	 */
+	protected static String checkMetaData(final FormItemList formItemList,
+			final CreateResponse response) {
+		try {
+			return formItemList
+					.getField(ProtocolConstants.Parameters.Create.META_DATA);
+		} catch (final IllegalArgumentException e) {
+			return null;
+		}
+	}
+
 	protected static Boolean checkAutoRotateFlag(
 			final FormItemList formItemList, final CreateResponse response) {
 		try {
@@ -154,34 +128,6 @@ public class CreateRequest {
 			}
 		} catch (final IllegalArgumentException e) {
 			return false;
-		}
-
-		return null;
-	}
-
-	/**
-	 * Extracts the meta data field from the FormItemList and checks for
-	 * protocol compliance
-	 * 
-	 * @param formItemList
-	 * @param response
-	 * @return valid meta data<br>
-	 *         <b>null</b> if field missing or malformed
-	 */
-	protected static String checkMetaData(final FormItemList formItemList,
-			final CreateResponse response) {
-		try {
-			final String metaData = formItemList
-					.getField(ProtocolConstants.Parameters.Create.META_DATA);
-
-			try {
-				PARSER.parse(metaData);
-				return metaData;
-			} catch (final ParseException e) {
-				response.metaDataMalformed();
-			}
-		} catch (final IllegalArgumentException e) {
-			// optional meta data is missing
 		}
 
 		return null;

@@ -16,6 +16,15 @@
       </plugin>
     </plugins>
   </build>
+  <distributionManagement>
+    <repository>
+      <id>metalcon-repo</id>
+      <uniqueVersion>false</uniqueVersion>
+      <name>Metalcon Repository</name>
+      <url>scp://localhost/metalcon-mvn/</url>
+      <layout>default</layout>
+    </repository>
+  </distributionManagement>
   <dependencies>
   	<dependency>
   		<groupId>com.googlecode.json-simple</groupId>
