@@ -42,57 +42,57 @@ public class ImageStorageServer implements ImageStorageServerAPI {
 	/**
 	 * date formatter
 	 */
-	private static final Format FORMATTER = new SimpleDateFormat("yyyy-MM-dd");
+	protected static final Format FORMATTER = new SimpleDateFormat("yyyy-MM-dd");
 
 	/**
 	 * JSON parser
 	 */
-	private static final JSONParser PARSER = new JSONParser();
+	protected static final JSONParser PARSER = new JSONParser();
 
 	/**
 	 * minimum hash length
 	 */
-	private static final int MIN_HASH_LENGTH = 6;
+	protected static final int MIN_HASH_LENGTH = 6;
 
 	/**
 	 * year represented by the current formatted year
 	 */
-	private static int YEAR;
+	protected static int YEAR;
 
 	/**
 	 * day of the year represented by the current formatted day
 	 */
-	private static int DAY;
+	protected static int DAY;
 
 	/**
 	 * formatted year
 	 */
-	private static String FORMATTED_YEAR;
+	protected static String FORMATTED_YEAR;
 
 	/**
 	 * formatted day
 	 */
-	private static String FORMATTED_DAY;
+	protected static String FORMATTED_DAY;
 
 	/**
 	 * root directory for the image storage server
 	 */
-	private final String imageDirectory;
+	protected final String imageDirectory;
 
 	/**
 	 * temporary directory for image magic
 	 */
-	private final String temporaryDirectory;
+	protected final String temporaryDirectory;
 
 	/**
 	 * database for image meta data
 	 */
-	private final ImageMetaDatabase imageMetaDatabase;
+	protected final ImageMetaDatabase imageMetaDatabase;
 
 	/**
 	 * server running flag
 	 */
-	private boolean running = false;
+	protected boolean running = false;
 
 	/**
 	 * create a new image storage server
@@ -125,7 +125,7 @@ public class ImageStorageServer implements ImageStorageServerAPI {
 	/**
 	 * update the current date strings
 	 */
-	private static void updateDateLabels() {
+	protected static void updateDateLabels() {
 		final Calendar calendar = Calendar.getInstance();
 		final int day = calendar.get(Calendar.DAY_OF_YEAR);
 		final int year = calendar.get(Calendar.YEAR);
@@ -146,7 +146,7 @@ public class ImageStorageServer implements ImageStorageServerAPI {
 	 *            object to generate the hash for
 	 * @return hash for the key passed
 	 */
-	private static String generateHash(final String key) {
+	protected static String generateHash(final String key) {
 		final String hash = String.valueOf(key.hashCode());
 
 		if (hash.length() < MIN_HASH_LENGTH) {
@@ -171,7 +171,7 @@ public class ImageStorageServer implements ImageStorageServerAPI {
 	 *            number of sub directories
 	 * @return relative directory path using hashes
 	 */
-	private static String getRelativeDirectory(final String hash,
+	protected static String getRelativeDirectory(final String hash,
 			final int depth) {
 		int pathLength = 0;
 		for (int i = 0; i < depth; i++) {
@@ -201,7 +201,7 @@ public class ImageStorageServer implements ImageStorageServerAPI {
 	 * @throws IOException
 	 *             if the writing failed
 	 */
-	private static void writeImageStream(final InputStream imageInputStream,
+	protected static void writeImageStream(final InputStream imageInputStream,
 			final File destinationFile) throws FileNotFoundException,
 			IOException {
 		final OutputStream imageOutputStream = new FileOutputStream(
@@ -223,7 +223,7 @@ public class ImageStorageServer implements ImageStorageServerAPI {
 	 * @throws IOException
 	 *             if the writing failed
 	 */
-	private static void storeImage(final InputStream imageInputStream,
+	protected static void storeImage(final InputStream imageInputStream,
 			final File imageFile) throws IOException {
 		// create the parental directories
 		final File imageFileDir = imageFile.getParentFile();
@@ -244,7 +244,7 @@ public class ImageStorageServer implements ImageStorageServerAPI {
 	 * @throws MagickException
 	 *             if the compression/writing failed
 	 */
-	private static void storeCompressedImage(final MagickImage image,
+	protected static void storeCompressedImage(final MagickImage image,
 			final File imageFile) throws MagickException {
 		// create the parental directories
 		final File imageFileDir = imageFile.getParentFile();
@@ -273,7 +273,7 @@ public class ImageStorageServer implements ImageStorageServerAPI {
 	 * @throws MagickException
 	 *             if the image dimension could not be accessed
 	 */
-	private static boolean checkCroppingInformation(final MagickImage image,
+	protected static boolean checkCroppingInformation(final MagickImage image,
 			final ImageFrame croppingInformation, final CreateResponse response)
 			throws MagickException {
 		final int imageWidth = (int) image.getDimension().getWidth();
@@ -343,7 +343,7 @@ public class ImageStorageServer implements ImageStorageServerAPI {
 	 * @throws MagickException
 	 *             if the cropping failed
 	 */
-	private static MagickImage cropImage(final MagickImage image,
+	protected static MagickImage cropImage(final MagickImage image,
 			final int left, final int top, final int width, final int height)
 			throws MagickException {
 		return image.cropImage(new Rectangle(left, top, width, height));
@@ -364,7 +364,7 @@ public class ImageStorageServer implements ImageStorageServerAPI {
 	 * @throws MagickException
 	 *             if the scaling failed
 	 */
-	private static MagickImage scaleImage(final MagickImage image, int width,
+	protected static MagickImage scaleImage(final MagickImage image, int width,
 			int height, final ScalingType scalingType) throws MagickException {
 
 		switch (scalingType) {
@@ -412,7 +412,7 @@ public class ImageStorageServer implements ImageStorageServerAPI {
 	 * @throws MagickException
 	 *             if the rotation fails
 	 */
-	private static MagickImage autoRotate(final MagickImage image)
+	protected static MagickImage autoRotate(final MagickImage image)
 			throws MagickException {
 		final String exifOrientation = "exif:Orientation";
 		final String sOrientation = image.getImageAttribute(exifOrientation);
@@ -460,7 +460,7 @@ public class ImageStorageServer implements ImageStorageServerAPI {
 	 * @param removeRoot
 	 *            if set the directory passed will be removed too
 	 */
-	private static void deleteDirectoryContent(final File directory,
+	protected static void deleteDirectoryContent(final File directory,
 			final boolean removeRoot) {
 		final File[] content = directory.listFiles();
 		if (content != null) {
@@ -962,7 +962,7 @@ public class ImageStorageServer implements ImageStorageServerAPI {
 	 *            image identifier hash
 	 * @return file handle to the original version of the image passed
 	 */
-	private File getOriginalFile(final String hash) {
+	protected File getOriginalFile(final String hash) {
 		updateDateLabels();
 		return new File(this.imageDirectory + "originals" + File.separator
 				+ FORMATTED_YEAR + File.separator + FORMATTED_DAY
@@ -976,7 +976,7 @@ public class ImageStorageServer implements ImageStorageServerAPI {
 	 *            image identifier hash
 	 * @return file handle to the basis version of the image passed
 	 */
-	private File getBasisFile(final String hash) {
+	protected File getBasisFile(final String hash) {
 		return new File(this.imageDirectory + getRelativeDirectory(hash, 3)
 				+ File.separator + "basis", hash + ".jpg");
 	}
@@ -988,7 +988,7 @@ public class ImageStorageServer implements ImageStorageServerAPI {
 	 *            image identifier hash
 	 * @return file handle to the temporary version of the image passed
 	 */
-	private File getTemporaryFile(final String hash) {
+	protected File getTemporaryFile(final String hash) {
 		return new File(this.temporaryDirectory, hash);
 	}
 
@@ -1003,7 +1003,7 @@ public class ImageStorageServer implements ImageStorageServerAPI {
 	 *            target height
 	 * @return file handle to the scaled version of the image passed
 	 */
-	private File getScaledFile(final String hash, final int width,
+	protected File getScaledFile(final String hash, final int width,
 			final int height) {
 		return new File(this.imageDirectory + getRelativeDirectory(hash, 3)
 				+ File.separator + String.valueOf(width) + "x"
@@ -1024,7 +1024,7 @@ public class ImageStorageServer implements ImageStorageServerAPI {
 	 * @throws MagickException
 	 *             image stream invalid
 	 */
-	private MagickImage storeAndLoadImage(final String hash,
+	protected MagickImage storeAndLoadImage(final String hash,
 			final InputStream imageStream) throws IOException, MagickException {
 		// store the original image
 		final File tmpFile = this.getTemporaryFile(hash);
