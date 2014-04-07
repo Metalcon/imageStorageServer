@@ -31,6 +31,7 @@ import de.metalcon.imageServer.protocol.RequestTest;
 import de.metalcon.imageStorageServer.ImageData;
 import de.metalcon.imageStorageServer.ImageFrame;
 import de.metalcon.imageStorageServer.ImageStorageServer;
+import de.metalcon.imageStorageServer.ImageStorageServerConfig;
 import de.metalcon.imageStorageServer.ScalingType;
 import de.metalcon.imageStorageServer.protocol.ProtocolConstants;
 import de.metalcon.imageStorageServer.protocol.create.CreateResponse;
@@ -134,7 +135,9 @@ public class ImageStorageServerTest extends RequestTest {
 
     @Before
     public void setUp() throws Exception {
-        server = new ImageStorageServer("test.iss.config");
+        server =
+                new ImageStorageServer(new ImageStorageServerConfig(
+                        "test.iss.config"));
         server.clear();
 
         VALID_IMAGE_STREAM_JPEG = new FileInputStream(VALID_IMAGE_PATH_JPEG);

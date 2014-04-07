@@ -24,7 +24,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import de.metalcon.imageStorageServer.ISSConfig;
+import de.metalcon.imageStorageServer.ImageStorageServerConfig;
 import de.metalcon.imageStorageServer.protocol.ProtocolConstants;
 import de.metalcon.imageStorageServer.protocol.create.CreateRequest;
 import de.metalcon.imageStorageServer.protocol.create.CreateResponse;
@@ -50,7 +50,8 @@ public class CreateRequestTest extends RequestTest {
 
     @BeforeClass
     public static void beforeClass() {
-        final ISSConfig config = new ISSConfig(CONFIG_PATH);
+        final ImageStorageServerConfig config =
+                new ImageStorageServerConfig(CONFIG_PATH);
         TEST_FILE_DIRECTORY =
                 new File(config.getImageDirectory()).getParentFile();
         DISK_FILE_REPOSITORY = new File(config.getTemporaryDirectory());
