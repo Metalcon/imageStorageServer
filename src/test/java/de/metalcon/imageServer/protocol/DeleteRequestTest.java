@@ -9,38 +9,38 @@ import org.junit.Test;
 import de.metalcon.imageStorageServer.protocol.ProtocolConstants;
 import de.metalcon.imageStorageServer.protocol.delete.DeleteRequest;
 import de.metalcon.imageStorageServer.protocol.delete.DeleteResponse;
-import de.metalcon.utils.FormItemList;
+import de.metalcon.utils.formItemList.FormItemList;
 
 public class DeleteRequestTest extends RequestTest {
 
-	private DeleteRequest deleteRequest;
+    private DeleteRequest deleteRequest;
 
-	private void fillRequest(final String imageIdentifier) {
-		FormItemList formItemList = new FormItemList();
+    private void fillRequest(final String imageIdentifier) {
+        FormItemList formItemList = new FormItemList();
 
-		if (imageIdentifier != null) {
-			formItemList.addField(
-					ProtocolConstants.Parameters.Delete.IMAGE_IDENTIFIER,
-					imageIdentifier);
-		}
+        if (imageIdentifier != null) {
+            formItemList.addField(
+                    ProtocolConstants.Parameters.Delete.IMAGE_IDENTIFIER,
+                    imageIdentifier);
+        }
 
-		final DeleteResponse deleteResponse = new DeleteResponse();
-		this.deleteRequest = DeleteRequest.checkRequest(formItemList,
-				deleteResponse);
-		this.extractJson(deleteResponse);
-	}
+        final DeleteResponse deleteResponse = new DeleteResponse();
+        deleteRequest =
+                DeleteRequest.checkRequest(formItemList, deleteResponse);
+        extractJson(deleteResponse);
+    }
 
-	@Test
-	public void testDeleteRequest() {
-		this.fillRequest(VALID_IDENTIFIER);
-		assertNotNull(this.deleteRequest);
-		assertEquals(VALID_IDENTIFIER, this.deleteRequest.getImageIdentifier());
-	}
+    @Test
+    public void testDeleteRequest() {
+        fillRequest(VALID_IDENTIFIER);
+        assertNotNull(deleteRequest);
+        assertEquals(VALID_IDENTIFIER, deleteRequest.getImageIdentifier());
+    }
 
-	@Test
-	public void testImageIdentifierMissing() {
-		this.fillRequest(null);
-		this.checkForMissingParameterMessage(ProtocolConstants.Parameters.Delete.IMAGE_IDENTIFIER);
-		assertNull(this.deleteRequest);
-	}
+    @Test
+    public void testImageIdentifierMissing() {
+        fillRequest(null);
+        checkForMissingParameterMessage(ProtocolConstants.Parameters.Delete.IMAGE_IDENTIFIER);
+        assertNull(deleteRequest);
+    }
 }

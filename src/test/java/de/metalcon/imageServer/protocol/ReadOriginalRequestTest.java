@@ -9,37 +9,37 @@ import org.junit.Test;
 import de.metalcon.imageStorageServer.protocol.ProtocolConstants;
 import de.metalcon.imageStorageServer.protocol.read.ReadRequest;
 import de.metalcon.imageStorageServer.protocol.read.ReadResponse;
-import de.metalcon.utils.FormItemList;
+import de.metalcon.utils.formItemList.FormItemList;
 
 public class ReadOriginalRequestTest extends RequestTest {
 
-	private ReadRequest readRequest;
+    private ReadRequest readRequest;
 
-	private void fillRequest(final String imageIdentifier) {
-		FormItemList formItemList = new FormItemList();
+    private void fillRequest(final String imageIdentifier) {
+        FormItemList formItemList = new FormItemList();
 
-		if (imageIdentifier != null) {
-			formItemList.addField(
-					ProtocolConstants.Parameters.Read.IMAGE_IDENTIFIER,
-					imageIdentifier);
-		}
+        if (imageIdentifier != null) {
+            formItemList.addField(
+                    ProtocolConstants.Parameters.Read.IMAGE_IDENTIFIER,
+                    imageIdentifier);
+        }
 
-		final ReadResponse readResponse = new ReadResponse();
-		this.readRequest = ReadRequest.checkRequest(formItemList, readResponse);
-		this.extractJson(readResponse);
-	}
+        final ReadResponse readResponse = new ReadResponse();
+        readRequest = ReadRequest.checkRequest(formItemList, readResponse);
+        extractJson(readResponse);
+    }
 
-	@Test
-	public void testReadOriginalRequest() {
-		this.fillRequest(VALID_IDENTIFIER);
-		assertNotNull(this.readRequest);
-		assertEquals(VALID_IDENTIFIER, this.readRequest.getImageIdentifier());
-	}
+    @Test
+    public void testReadOriginalRequest() {
+        fillRequest(VALID_IDENTIFIER);
+        assertNotNull(readRequest);
+        assertEquals(VALID_IDENTIFIER, readRequest.getImageIdentifier());
+    }
 
-	@Test
-	public void testImageIdentifierMissing() {
-		this.fillRequest(null);
-		this.checkForMissingParameterMessage(ProtocolConstants.Parameters.Read.IMAGE_IDENTIFIER);
-		assertNull(this.readRequest);
-	}
+    @Test
+    public void testImageIdentifierMissing() {
+        fillRequest(null);
+        checkForMissingParameterMessage(ProtocolConstants.Parameters.Read.IMAGE_IDENTIFIER);
+        assertNull(readRequest);
+    }
 }

@@ -1,111 +1,120 @@
 package de.metalcon.imageStorageServer.protocol.read;
 
 import de.metalcon.imageStorageServer.protocol.ProtocolConstants;
-import de.metalcon.utils.FormItemList;
+import de.metalcon.utils.formItemList.FormItemList;
 
 public class ReadScaledRequest {
 
-	private final String imageIdentifier;
+    private final String imageIdentifier;
 
-	private final int imageWidth;
-	private final int imageHeight;
+    private final int imageWidth;
 
-	public ReadScaledRequest(final String imageIdentifier,
-			final int imageWidth, final int imageHeight) {
-		this.imageIdentifier = imageIdentifier;
-		this.imageWidth = imageWidth;
-		this.imageHeight = imageHeight;
-	}
+    private final int imageHeight;
 
-	public String getImageIdentifier() {
-		return this.imageIdentifier;
-	}
+    public ReadScaledRequest(
+            final String imageIdentifier,
+            final int imageWidth,
+            final int imageHeight) {
+        this.imageIdentifier = imageIdentifier;
+        this.imageWidth = imageWidth;
+        this.imageHeight = imageHeight;
+    }
 
-	public int getImageWidth() {
-		return this.imageWidth;
-	}
+    public String getImageIdentifier() {
+        return imageIdentifier;
+    }
 
-	public int getImageHeight() {
-		return this.imageHeight;
-	}
+    public int getImageWidth() {
+        return imageWidth;
+    }
 
-	public static ReadScaledRequest checkRequest(FormItemList formItemList,
-			ReadResponse readResponse) {
-		final String imageIdentifier = checkImageIdentifier(formItemList,
-				readResponse);
-		if (imageIdentifier != null) {
-			final Integer imageWidth = checkImageWidth(formItemList,
-					readResponse);
-			if (imageWidth != null) {
-				final Integer imageHeight = checkImageHeight(formItemList,
-						readResponse);
-				if (imageHeight != null) {
-					return new ReadScaledRequest(imageIdentifier, imageWidth,
-							imageHeight);
-				}
-			}
-		}
-		return null;
-	}
+    public int getImageHeight() {
+        return imageHeight;
+    }
 
-	private static String checkImageIdentifier(final FormItemList formItemList,
-			final ReadResponse response) {
-		try {
-			return formItemList
-					.getField(ProtocolConstants.Parameters.Read.IMAGE_IDENTIFIER);
-		} catch (final IllegalArgumentException e) {
-			response.addNoImageIdentifierError();
-		}
+    public static ReadScaledRequest checkRequest(
+            FormItemList formItemList,
+            ReadResponse readResponse) {
+        final String imageIdentifier =
+                checkImageIdentifier(formItemList, readResponse);
+        if (imageIdentifier != null) {
+            final Integer imageWidth =
+                    checkImageWidth(formItemList, readResponse);
+            if (imageWidth != null) {
+                final Integer imageHeight =
+                        checkImageHeight(formItemList, readResponse);
+                if (imageHeight != null) {
+                    return new ReadScaledRequest(imageIdentifier, imageWidth,
+                            imageHeight);
+                }
+            }
+        }
+        return null;
+    }
 
-		return null;
-	}
+    private static String checkImageIdentifier(
+            final FormItemList formItemList,
+            final ReadResponse response) {
+        try {
+            return formItemList
+                    .getField(ProtocolConstants.Parameters.Read.IMAGE_IDENTIFIER);
+        } catch (final IllegalArgumentException e) {
+            response.addNoImageIdentifierError();
+        }
 
-	private static Integer checkImageWidth(FormItemList formItemList,
-			ReadResponse response) {
-		try {
-			final String sWidth = formItemList
-					.getField(ProtocolConstants.Parameters.Read.IMAGE_WIDTH);
+        return null;
+    }
 
-			try {
-				final int width = Integer.parseInt(sWidth);
-				if (width > 0) {
-					return width;
-				}
+    private static Integer checkImageWidth(
+            FormItemList formItemList,
+            ReadResponse response) {
+        try {
+            final String sWidth =
+                    formItemList
+                            .getField(ProtocolConstants.Parameters.Read.IMAGE_WIDTH);
 
-				response.addImageWidthInvalidError(width);
+            try {
+                final int width = Integer.parseInt(sWidth);
+                if (width > 0) {
+                    return width;
+                }
 
-			} catch (final NumberFormatException e) {
-				response.addImageWidthMalformedError(sWidth);
-			}
-		} catch (final IllegalArgumentException e) {
-			response.addNoImageWidthError();
-		}
+                response.addImageWidthInvalidError(width);
 
-		return null;
-	}
+            } catch (final NumberFormatException e) {
+                response.addImageWidthMalformedError(sWidth);
+            }
+        } catch (final IllegalArgumentException e) {
+            response.addNoImageWidthError();
+        }
 
-	private static Integer checkImageHeight(FormItemList formItemList,
-			ReadResponse response) {
-		try {
-			final String sHeight = formItemList
-					.getField(ProtocolConstants.Parameters.Read.IMAGE_HEIGHT);
+        return null;
+    }
 
-			try {
-				final int height = Integer.parseInt(sHeight);
-				if (height > 0) {
-					return height;
-				}
+    private static Integer checkImageHeight(
+            FormItemList formItemList,
+            ReadResponse response) {
+        try {
+            final String sHeight =
+                    formItemList
+                            .getField(ProtocolConstants.Parameters.Read.IMAGE_HEIGHT);
 
-				response.addImageHeightInvalidError(height);
+            try {
+                final int height = Integer.parseInt(sHeight);
+                if (height > 0) {
+                    return height;
+                }
 
-			} catch (final NumberFormatException e) {
-				response.addImageHeightMalformedError(sHeight);
-			}
-		} catch (final IllegalArgumentException e) {
-			response.addNoImageHeightError();
-		}
+                response.addImageHeightInvalidError(height);
 
-		return null;
-	}
+            } catch (final NumberFormatException e) {
+                response.addImageHeightMalformedError(sHeight);
+            }
+        } catch (final IllegalArgumentException e) {
+            response.addNoImageHeightError();
+        }
+
+        return null;
+    }
 
 }
