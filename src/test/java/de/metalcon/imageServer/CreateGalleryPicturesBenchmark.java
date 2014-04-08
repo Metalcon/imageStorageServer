@@ -14,7 +14,7 @@ public class CreateGalleryPicturesBenchmark {
 
     private static final String SQL_DUMP = "/home/sebschlicht/galleryImage.sql";
 
-    private static final String CONFIG_PATH = "test.iss.config";
+    private static final String CONFIG_PATH = "src/main/resources/test.config";
 
     public static void main(String[] args) throws IOException {
         BufferedReader reader = null;

@@ -50,7 +50,7 @@ public class CreateWithCroppingRequestTest extends RequestTest {
 
     private static final String MALFORMED_CROPPING_VALUE = "NotANumber";
 
-    private static final String CONFIG_PATH = "test.iss.config";
+    private static final String CONFIG_PATH = "src/main/resources/test.config";
 
     private static File TEST_FILE_DIRECTORY, DISK_FILE_REPOSITORY;
 
@@ -76,7 +76,7 @@ public class CreateWithCroppingRequestTest extends RequestTest {
         DISK_FILE_REPOSITORY.mkdirs();
 
         // JPEG image item
-        final File imageItemJpeg = new File(TEST_FILE_DIRECTORY, "test.jpeg");
+        final File imageItemJpeg = new File("src/main/resources/test.jpeg");
         VALID_IMAGE_ITEM_JPEG = createImageItem("image/jpeg", imageItemJpeg);
         assertEquals(imageItemJpeg.length(), VALID_IMAGE_ITEM_JPEG.getSize());
 

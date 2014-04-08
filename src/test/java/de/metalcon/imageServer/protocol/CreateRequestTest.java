@@ -38,9 +38,9 @@ public class CreateRequestTest extends RequestTest {
 
     private static final String MALFORMED_AUTOROTATE_FLAG = "wrong";
 
-    private static final String CONFIG_PATH = "test.iss.config";
+    private static final String CONFIG_PATH = "src/main/resources/test.config";
 
-    private static File TEST_FILE_DIRECTORY, DISK_FILE_REPOSITORY;
+    private static File DISK_FILE_REPOSITORY;
 
     private static FileItem VALID_IMAGE_ITEM_JPEG;
 
@@ -52,8 +52,6 @@ public class CreateRequestTest extends RequestTest {
     public static void beforeClass() {
         final ImageStorageServerConfig config =
                 new ImageStorageServerConfig(CONFIG_PATH);
-        TEST_FILE_DIRECTORY =
-                new File(config.getImageDirectory()).getParentFile();
         DISK_FILE_REPOSITORY = new File(config.getTemporaryDirectory());
     }
 
@@ -64,7 +62,7 @@ public class CreateRequestTest extends RequestTest {
         DISK_FILE_REPOSITORY.mkdirs();
 
         // JPEG image item
-        final File imageItemJpeg = new File(TEST_FILE_DIRECTORY, "test.jpeg");
+        final File imageItemJpeg = new File("src/main/resources/test.jpeg");
         VALID_IMAGE_ITEM_JPEG = createImageItem("image/jpeg", imageItemJpeg);
         assertEquals(imageItemJpeg.length(), VALID_IMAGE_ITEM_JPEG.getSize());
 

@@ -10,6 +10,14 @@
   <artifactId>image-storage-server</artifactId>
   <version>0.1.0</version>
 
+  <!-- Metalcon repository to resolve dependencies from -->
+  <repositories>
+    <repository>
+      <id>metalcon-depend</id>
+      <url>http://develop.metalcon.de:8080/mvn/</url>
+    </repository>
+  </repositories>
+
   <build>
     <plugins>
       <plugin>

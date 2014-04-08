@@ -56,12 +56,12 @@ public class ImageStorageServerTest extends RequestTest {
     private static final String VALID_META_DATA = "{ \"author\": \"Testy\" }";
 
     private static final String VALID_IMAGE_PATH_JPEG =
-            "/etc/imageStorageServer/test.jpeg";
+            "src/main/resources/test.jpeg";
 
     private static InputStream VALID_IMAGE_STREAM_JPEG;
 
     private static final String VALID_IMAGE_PATH_PNG =
-            "/etc/imageStorageServer/test.png";
+            "src/main/resources/test.png";
 
     private static InputStream VALID_IMAGE_STREAM_PNG;
 
@@ -137,7 +137,7 @@ public class ImageStorageServerTest extends RequestTest {
     public void setUp() throws Exception {
         server =
                 new ImageStorageServer(new ImageStorageServerConfig(
-                        "test.iss.config"));
+                        "src/main/resources/test.config"));
         server.clear();
 
         VALID_IMAGE_STREAM_JPEG = new FileInputStream(VALID_IMAGE_PATH_JPEG);
