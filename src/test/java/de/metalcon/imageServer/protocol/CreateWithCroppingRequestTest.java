@@ -52,7 +52,7 @@ public class CreateWithCroppingRequestTest extends RequestTest {
 
     private static final String CONFIG_PATH = "src/main/resources/test.config";
 
-    private static File TEST_FILE_DIRECTORY, DISK_FILE_REPOSITORY;
+    private static File DISK_FILE_REPOSITORY;
 
     private static FileItem VALID_IMAGE_ITEM_JPEG;
 
@@ -64,8 +64,6 @@ public class CreateWithCroppingRequestTest extends RequestTest {
     public static void beforeClass() {
         final ImageStorageServerConfig config =
                 new ImageStorageServerConfig(CONFIG_PATH);
-        TEST_FILE_DIRECTORY =
-                new File(config.getImageDirectory()).getParentFile();
         DISK_FILE_REPOSITORY = new File(config.getTemporaryDirectory());
     }
 
