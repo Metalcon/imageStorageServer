@@ -130,11 +130,7 @@ public class ImageStorageServer implements ImageStorageServerAPI {
         }
 
         // TODO is there a better way to to this?
-        try {
-            new MagickImage();
-        } catch (RuntimeException e) {
-            throw new IllegalStateException("failed to load JMagick");
-        }
+        new MagickImage();
 
         try {
             imageMetaDatabase =
