@@ -3,12 +3,12 @@
   <parent>
     <groupId>de.metalcon</groupId>
     <artifactId>pom</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.20</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
   <artifactId>image-storage-server</artifactId>
-  <version>0.1.0</version>
+  <version>0.1.1</version>
 
   <!-- Metalcon repository to resolve dependencies from -->
   <repositories>
@@ -32,6 +32,17 @@
   </build>
 
   <dependencies>
+    <dependency>
+      <groupId>de.metalcon</groupId>
+      <artifactId>utils-form-item-list</artifactId>
+      <version>1.0.2</version>
+    </dependency>
+    <dependency>
+      <groupId>de.metalcon</groupId>
+      <artifactId>utils-meta-database</artifactId>
+      <version>1.0.2</version>
+    </dependency>
+
     <dependency>
       <groupId>com.googlecode.json-simple</groupId>
       <artifactId>json-simple</artifactId>
@@ -62,16 +73,6 @@
       <groupId>org.mongodb</groupId>
       <artifactId>mongo-java-driver</artifactId>
       <version>2.11.2</version>
-    </dependency>
-    <dependency>
-      <groupId>de.metalcon</groupId>
-      <artifactId>utils-form-item-list</artifactId>
-      <version>1.0.2</version>
-    </dependency>
-    <dependency>
-      <groupId>de.metalcon</groupId>
-      <artifactId>utils-meta-database</artifactId>
-      <version>1.0.2</version>
     </dependency>
   </dependencies>
 </project>

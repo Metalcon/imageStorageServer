@@ -14,6 +14,7 @@ import java.net.UnknownHostException;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 import magick.CompressionType;
 import magick.ImageInfo;
@@ -38,6 +39,11 @@ import de.metalcon.imageStorageServer.protocol.update.UpdateResponse;
  * 
  */
 public class ImageStorageServer implements ImageStorageServerAPI {
+
+    /**
+     * year formatter
+     */
+    protected static final Format YEAR_FORMATTER = new SimpleDateFormat("yyyy");
 
     /**
      * date formatter
@@ -78,12 +84,17 @@ public class ImageStorageServer implements ImageStorageServerAPI {
     /**
      * root directory for the image storage server
      */
-    protected final String imageDirectory;
+    protected final File imageDirectory;
+
+    /**
+     * root directory for original images
+     */
+    protected final File originalsDirectory;
 
     /**
      * temporary directory for image magic
      */
-    protected final String temporaryDirectory;
+    protected final File temporaryDirectory;
 
     /**
      * database for image meta data
@@ -104,8 +115,26 @@ public class ImageStorageServer implements ImageStorageServerAPI {
     public ImageStorageServer(
             ImageStorageServerConfig config) {
         ImageMetaDatabase imageMetaDatabase = null;
-        imageDirectory = config.getImageDirectory();
-        temporaryDirectory = config.getTemporaryDirectory();
+        imageDirectory = new File(config.getImageDirectory());
+        if ((!imageDirectory.exists() && !imageDirectory.mkdir())
+                || !imageDirectory.canWrite()) {
+            throw new IllegalStateException("image directory not writeable");
+        }
+        originalsDirectory = new File(imageDirectory, "originals");
+
+        temporaryDirectory = new File(config.getTemporaryDirectory());
+        if ((!temporaryDirectory.exists() && !temporaryDirectory.mkdir())
+                || !temporaryDirectory.canWrite()) {
+            throw new IllegalStateException(
+                    "temporary directory for image processing not writeable");
+        }
+
+        // TODO is there a better way to to this?
+        try {
+            new MagickImage();
+        } catch (RuntimeException e) {
+            throw new IllegalStateException("failed to load JMagick");
+        }
 
         try {
             imageMetaDatabase =
@@ -167,29 +196,24 @@ public class ImageStorageServer implements ImageStorageServerAPI {
     /**
      * generate the relative directory path for an image
      * 
+     * @param dir
+     *            parental directory
      * @param hash
      *            image identifier hash
      * @param depth
      *            number of sub directories
-     * @return relative directory path using hashes
+     * @return directory of specified depth in <i>dir</i>
      */
-    protected static String getRelativeDirectory(
+    protected static File getRelativeDirectory(
+            File dir,
             final String hash,
             final int depth) {
-        int pathLength = 0;
+        File crrDir = dir;
         for (int i = 0; i < depth; i++) {
-            pathLength += i + 1;
+            crrDir = new File(crrDir, hash.substring(0, i + 1));
         }
 
-        final StringBuilder path = new StringBuilder(pathLength);
-        for (int i = 0; i < depth; i++) {
-            path.append(hash.substring(0, i + 1));
-            if (i != (depth - 1)) {
-                path.append(File.separator);
-            }
-        }
-
-        return path.toString();
+        return crrDir;
     }
 
     /**
@@ -995,10 +1019,14 @@ public class ImageStorageServer implements ImageStorageServerAPI {
      * @return file handle to the original version of the image passed
      */
     protected File getOriginalFile(final String hash) {
-        updateDateLabels();
-        return new File(imageDirectory + "originals" + File.separator
-                + FORMATTED_YEAR + File.separator + FORMATTED_DAY
-                + File.separator + getRelativeDirectory(hash, 2), hash);
+        // FIXME use meta database to get date
+        Date date = new Date(System.currentTimeMillis());
+        String formattedYear = YEAR_FORMATTER.format(date);
+        String formattedDate = FORMATTER.format(date);
+
+        File yearDir = new File(originalsDirectory, formattedYear);
+        File dateDir = new File(yearDir, formattedDate);
+        return new File(getRelativeDirectory(dateDir, hash, 2), hash);
     }
 
     /**
@@ -1009,8 +1037,9 @@ public class ImageStorageServer implements ImageStorageServerAPI {
      * @return file handle to the basis version of the image passed
      */
     protected File getBasisFile(final String hash) {
-        return new File(imageDirectory + getRelativeDirectory(hash, 3)
-                + File.separator + "basis", hash + ".jpg");
+        File basisDir =
+                new File(getRelativeDirectory(imageDirectory, hash, 3), "basis");
+        return new File(basisDir, hash + ".jpg");
     }
 
     /**
@@ -1039,9 +1068,11 @@ public class ImageStorageServer implements ImageStorageServerAPI {
             final String hash,
             final int width,
             final int height) {
-        return new File(imageDirectory + getRelativeDirectory(hash, 3)
-                + File.separator + String.valueOf(width) + "x"
-                + String.valueOf(height), hash + ".jpg");
+        File parentDir = getRelativeDirectory(imageDirectory, hash, 3);
+        File scaledDir =
+                new File(parentDir, String.valueOf(width) + "x"
+                        + String.valueOf(height));
+        return new File(scaledDir, hash + ".jpg");
     }
 
     /**
@@ -1113,8 +1144,8 @@ public class ImageStorageServer implements ImageStorageServerAPI {
      * <b>removes all images and meta data</b>
      */
     public void clear() {
-        deleteDirectoryContent(new File(imageDirectory), false);
-        deleteDirectoryContent(new File(temporaryDirectory), false);
+        deleteDirectoryContent(imageDirectory, false);
+        deleteDirectoryContent(temporaryDirectory, false);
         imageMetaDatabase.clear();
     }
 
